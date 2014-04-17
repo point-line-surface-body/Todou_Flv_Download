@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-#龙斌大话电影 
-#http://video.56.com/opera/22121.html
+#综艺
+#http://video.56.com/zy/
+#非你莫属2014 
+#http://video.56.com/opera/22778.html
 #<a title="20131104" class="" href="http://www.56.com/u78/v_OTk4NzI0OTk.html" 
 
 #http://www.hiadmin.org/code/python-spider
@@ -11,8 +13,6 @@
 import os, sys, time, random, re
 import requests
 import urllib, urllib2
-import wget
-from wgety import Wgety
 #print sys.getdefaultencoding()
 reload(sys);sys.setdefaultencoding('utf-8')
 #import socket
@@ -70,25 +70,13 @@ class get_FLV:
 		downlink = pattern.findall(content.text)[0]
 		downlink_url = re.compile('href="(.*)"\s+target').match(downlink).group(1)
 		return downlink_url
-		#<a href="http://f4.r.56.com/f4.c87.56.com/flvdownload/15/12/139236092976hd.flv?v=1&t=Fic-6sYet8oRBsQwk90S4A&r=838&e=1392726908&tt=641&sz=24357038&vid=106532824" target="_blank" class="link" onclick='_alert()
+	
 	def call_back(self, a, b, c):
 		per = 100.0 * a * b / c
 		if per > 100: per = 100
 		print '%.2f%%' % per
 
 	def download_flv_to_localdisk(self, downlink, localfile):
-		'''
-		#url = 'http://www.flvcd.com/parse.php?kw=' + urllib.quote(videourl)  + '&format=' + format;
-		f = open(localfile, "wb")
-		u = urllib2.request.urlopen(downlink)
-		while True:
-			data = u.read(1024)
-			if len(data) == 0:
-				break
-			f.write(data)
-		f.close()
-		'''
-
 		#http://www.nowamagic.net/academy/detail/1302861
 		urllib.urlretrieve(downlink, localfile, self.call_back)
 		#r =requests.get( downlink )
@@ -110,51 +98,31 @@ class get_FLV:
 				array = i.split(" ")
 				title = re.compile('title="(\d+)"').match(array[0]).group(1)
 				link  = re.compile('href="(.*)"').match(array[2]).group(1)
-				#print title, link
+				print title, link
 				self.dict[title] = link
 
 		for key in self.dict.keys():
 			print "KEY=%s, Link=%s" % (key,self.dict[key])
 			localfilename = key + ".flv"
-			if os.path.exists (localfilename):
-				continue
 			downlinkurl = self.get_flv_downlink_url(self.dict[key])
 			print downlinkurl
 			if downlinkurl != None:
-
 				print "Begin to Download %s\n" % localfilename
-				#self.download_flv_to_localdisk( downlinkurl, localfilename )
+				self.download_flv_to_localdisk( downlinkurl, localfilename )
 
 			time.sleep( 5 ) 
-		'''
-		if( req.status_code == requests.codes.ok ):
-			print "URL : " + req.url
-			#Write req.text to file
-			OutPutFile = self.dir + "/" + "xx" + ".txt"
-			print "File: " + OutPutFile
-			try:
-				fd = open( OutPutFile, "w")
-			except:
-				print "Unable to create file : %s" % OutPutFile
-				fd.close()
-				return
-			finally:
-				fd.write( req.text )
-				fd.close()
-		'''
 
 
 if __name__ == '__main__':
 	#http://blog.csdn.net/wind__fantasy/article/details/6989356
 	#http://www.nowamagic.net/academy/detail/1302861
 	#http://blog.5d13.cn/resources/goweb/03.1.html
-	LongBinTalkShow_56WebURL = "http://video.56.com/opera/22121.html"
-	OutputDir = r"C:/temp/FLV"
+	Feinimoshu_56WebURL = "http://video.56.com/opera/22778.html"
+	OutputDir = r"C:/temp/FLV/feinimoshu"
 	if not os.path.exists( OutputDir ):
 		os.makedirs( OutputDir,0771 )
-		#os.mkdir( OutputDir,0771 )
 
-	t = get_FLV( LongBinTalkShow_56WebURL, OutputDir )
+	t = get_FLV( Feinimoshu_56WebURL, OutputDir )
 	t.run()
 
 
