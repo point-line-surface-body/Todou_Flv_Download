@@ -5,17 +5,13 @@
 #http://video.56.com/opera/22121.html
 #<a title="20131104" class="" href="http://www.56.com/u78/v_OTk4NzI0OTk.html" 
 
-#http://www.hiadmin.org/code/python-spider
-
-
 import os, sys, time, random, re
 import requests
 import urllib, urllib2
 import wget
 from wgety import Wgety
-#print sys.getdefaultencoding()
 reload(sys);sys.setdefaultencoding('utf-8')
-#import socket
+
 
 
 __version__ = '1.0'
@@ -24,22 +20,9 @@ __date__    = "2014-02-18"
 __license__ = "GNU Lesser General Public License (LGPL)"
 
 
-#>>> r = requests.get('https://api.github.com', auth=('user', 'pass'))
-#http://my.oschina.net/HankCN/blog/123201
-#REF:http://hi.baidu.com/dongyuejiang/item/ce69a0d24f045a53d63aaef9
 
-proxies = {
-  "http": "http://senya:****!\.@135.245.48.13:8000",
-  "https": "http://senya:****!\.@135.245.48.13:8000"
-}
-
-#patterm="<a title="20140213" class="" href="http://www.56.com/u60/v_MTA2MTkxNDk3.html" target="_blank">"
 link_pattern = re.compile('href=', re.MULTILINE) # re.IGNORECASE
-#'title=.*href=([^"]*)\s+target='
 
-#regex
-#http://blog.csdn.net/ithomer/article/details/16963857
-#http://www.cnblogs.com/sevenyuan/archive/2010/12/06/1898075.html
 
 class get_FLV:
 	def __init__( self, weburl, outputdir, time_out = 2, proxies=None ):
@@ -50,7 +33,6 @@ class get_FLV:
 		self.dict = {}
 		os.chdir( self.dir )
 
-		#socket.setdefaulttimeout( time_out )
 	def get_flv_downlink_url(self, webpageUrl, format="high"):
 		#format: super > high > normal
 		#http://www.flvcd.com/parse.php?kw=&flag=one&format=high
@@ -77,29 +59,12 @@ class get_FLV:
 		print '%.2f%%' % per
 
 	def download_flv_to_localdisk(self, downlink, localfile):
-		'''
-		#url = 'http://www.flvcd.com/parse.php?kw=' + urllib.quote(videourl)  + '&format=' + format;
-		f = open(localfile, "wb")
-		u = urllib2.request.urlopen(downlink)
-		while True:
-			data = u.read(1024)
-			if len(data) == 0:
-				break
-			f.write(data)
-		f.close()
-		'''
-
 		#http://www.nowamagic.net/academy/detail/1302861
 		urllib.urlretrieve(downlink, localfile, self.call_back)
-		#r =requests.get( downlink )
-		#open(localfile, 'wb').write( r.content )
 
-		#w = Wgety()
-		#w.execute(url=downlink, filename=localfile)
 
 	def run( self ):
 		try:
-			#req = requests.get( self.url, params=payload, allow_redirects=False, timeout=self.timeout )
 			req = requests.get( self.url, allow_redirects=False, timeout=self.timeout )
 		except:
 			return
@@ -110,7 +75,6 @@ class get_FLV:
 				array = i.split(" ")
 				title = re.compile('title="(\d+)"').match(array[0]).group(1)
 				link  = re.compile('href="(.*)"').match(array[2]).group(1)
-				#print title, link
 				self.dict[title] = link
 
 		for key in self.dict.keys():
@@ -121,27 +85,10 @@ class get_FLV:
 			downlinkurl = self.get_flv_downlink_url(self.dict[key])
 			print downlinkurl
 			if downlinkurl != None:
-
 				print "Begin to Download %s\n" % localfilename
-				#self.download_flv_to_localdisk( downlinkurl, localfilename )
+				self.download_flv_to_localdisk( downlinkurl, localfilename )
 
 			time.sleep( 5 ) 
-		'''
-		if( req.status_code == requests.codes.ok ):
-			print "URL : " + req.url
-			#Write req.text to file
-			OutPutFile = self.dir + "/" + "xx" + ".txt"
-			print "File: " + OutPutFile
-			try:
-				fd = open( OutPutFile, "w")
-			except:
-				print "Unable to create file : %s" % OutPutFile
-				fd.close()
-				return
-			finally:
-				fd.write( req.text )
-				fd.close()
-		'''
 
 
 if __name__ == '__main__':
@@ -152,7 +99,6 @@ if __name__ == '__main__':
 	OutputDir = r"C:/temp/FLV"
 	if not os.path.exists( OutputDir ):
 		os.makedirs( OutputDir,0771 )
-		#os.mkdir( OutputDir,0771 )
 
 	t = get_FLV( LongBinTalkShow_56WebURL, OutputDir )
 	t.run()
